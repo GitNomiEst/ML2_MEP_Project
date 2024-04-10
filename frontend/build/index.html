@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- My stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpg" href="static/asteorid.jpg">
+
+    <title>Asteorids Home</title>
+</head>
+
+<body>
+    <!-- Navigation Links -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-auto">
+                <!-- Navigation Links -->
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <ul class="navbar-nav">
+                        <li>
+                            <a class="nav-link" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="model.html">Model</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <h1 class="title">MDM - Python Project 1 - kaeseno1</h1>
+    </div>
+    <div class="container-fluid weather-container">
+        <h2 class="main-title">Home</h2>
+        <h2 class="weather-title">Dangerous Asteorids</h2>
+
+        <p>Please enter the parameters for your special Asteorid:</p>
+
+        <!-- Input fields for model prediction -->
+        <form id="asteroid-form">
+            <div class="form-group row">
+                <label for="absolute-magnitude" class="col-sm-4 col-form-label">Absolute Magnitude:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="absolute-magnitude" name="absolute-magnitude">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="min-diameter" class="col-sm-4 col-form-label">Minimum Diameter (km):</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="min-diameter" name="min-diameter">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="max-diameter" class="col-sm-4 col-form-label">Maximum Diameter (km):</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="max-diameter" name="max-diameter">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="miss-distance" class="col-sm-4 col-form-label">Miss Distance (km):</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="miss-distance" name="miss-distance">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="relative-velocity" class="col-sm-4 col-form-label">Relative Velocity (km/h):</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="relative-velocity" name="relative-velocity">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12 text-center">
+                    <button type="submit" class="btn btn-primary">Predict Danger</button>
+                </div>
+            </div>
+        </form>
+        <br>
+        <div id="prediction-result"></div> <br>
+        <button id="clear-input" class="btn btn-secondary">Clear Input</button>
+
+
+        <div>
+            <p>German translation: <br>
+            <ul>
+                <li>Absolute Helligkeit: e.g. 25 - sehr hoch </li>
+                <li>Minimaler Durchmesser (km): e.g. 2 - grosser Durchmesser </li>
+                <li>Maximaler Durchmesser (km): e.g. 10 - grosser Durchmesser</li>
+                <li>Fehlende Entfernung (km): e.g. 50000 - geringe Annäherungsentfernung </li>
+                <li>Relative Geschwindigkeit (km/h): e.g. 50000 - sehr hoch</li>
+            </ul>
+            </p>
+        </div>
+    </div>
+</body>
+
+<script>
+    function validateForm() {
+        var absoluteMagnitude = document.getElementById('absolute-magnitude').value;
+        var minDiameter = document.getElementById('min-diameter').value;
+        var maxDiameter = document.getElementById('max-diameter').value;
+        var missDistance = document.getElementById('miss-distance').value;
+        var relativeVelocity = document.getElementById('relative-velocity').value;
+
+        if (
+            isNaN(absoluteMagnitude) ||
+            isNaN(minDiameter) ||
+            isNaN(maxDiameter) ||
+            isNaN(missDistance) ||
+            isNaN(relativeVelocity) ||
+            absoluteMagnitude === "" ||
+            minDiameter === "" ||
+            maxDiameter === "" ||
+            missDistance === "" ||
+            relativeVelocity === ""
+        ) {
+            alert("Please enter valid numbers in all fields.");
+            return false;
+        }
+        return true;
+    }
+
+    document.getElementById('asteroid-form').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
+        if (validateForm()) {
+            // Get the form data
+            const formData = new FormData(this);
+
+            // Convert form data to JSON
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            // Send a POST request to the server with the form data
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the prediction result
+                const predictionResult = document.getElementById('prediction-result');
+                predictionResult.innerHTML = `Prediction Result: ${data.result}`;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    });
+
+    // Clear input fields when the "Clear Input" button is clicked
+    document.getElementById('clear-input').addEventListener('click', function () {
+        // Get all input fields
+        const inputFields = document.querySelectorAll('input[type="text"]');
+
+        // Iterate over each input field and set its value to an empty string
+        inputFields.forEach(function (input) {
+            input.value = '';
+        });
+    });
+</script>
+
+</html>

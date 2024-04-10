@@ -1,0 +1,54 @@
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    color: black;
+}
+
+.container-fluid {
+    text-align: center;
+}
+
+.title {
+    color: white;
+    font-size: 14pt;
+    font-family: Calibri, sans-serif;
+    font-weight: bold;
+}
+
+.weather-container {
+    margin-top: 2cm;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Align items vertically */
+}
+
+.model-explanation {
+    text-align: center;
+}
+
+.weather-title {
+    color: white;
+    font-weight: bold;
+
+}
+
+.main-title {
+    font-size: 20pt;
+    color: white;
+    font-weight: bold;
+}
+
+.error-message {
+    color: red;
+}
+
+body {
+    background-image: url('static/background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: white;
+    font-weight: bold;
+}
