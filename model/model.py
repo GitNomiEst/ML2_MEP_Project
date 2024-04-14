@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 from pymongo import MongoClient
 from sklearn.model_selection import train_test_split
@@ -24,12 +25,14 @@ def load_neo_data():
 
     # Fetch data from MongoDB
     neo_data = list(collection.find())
-    print("data from mongo loaded")
+    print("Data from mongo loaded")
 
     return neo_data
 
 
 def preprocess_data(neo_data):
+    print (neo_data)
+    
     features = []
     labels = []
 
@@ -49,9 +52,44 @@ def preprocess_data(neo_data):
     # Create a DataFrame from the extracted features and labels
     df = pd.DataFrame(features, columns=['absolute_magnitude_h', 'min_diameter_km', 'max_diameter_km', 'miss_distance_km', 'relative_velocity_km_hour'])
     df['is_potentially_hazardous'] = labels
-    print("data preprocessed")
+    print("Data preprocessed")
 
     return df
+
+# Usage of balance dataset:
+# After preprocessing data, call balance_dataset function to balance the dataset balanced_df = balance_dataset(df)
+# Then continue with training the model using the balanced dataset model, X_test, y_test = train_model(balanced_df)
+
+def balance_dataset(df):
+    # Separate hazardous and non-hazardous asteroids
+    hazardous_asteroids = df[df['is_potentially_hazardous'] == True]
+    non_hazardous_asteroids = df[df['is_potentially_hazardous'] == False]
+    
+    # Determine the number of hazardous and non-hazardous asteroids
+    num_hazardous = len(hazardous_asteroids)
+    num_non_hazardous = len(non_hazardous_asteroids)
+    
+    # Undersampling or oversampling
+    if num_hazardous < num_non_hazardous:  # Undersampling
+        # Sample non-hazardous asteroids equal to the number of hazardous ones
+        sampled_non_hazardous = non_hazardous_asteroids.sample(n=num_hazardous, random_state=42)
+        # Combine sampled non-hazardous with all hazardous asteroids
+        balanced_df = pd.concat([sampled_non_hazardous, hazardous_asteroids])
+    else:  # Oversampling
+        # Sample hazardous asteroids with replacement equal to the number of non-hazardous ones
+        sampled_hazardous = hazardous_asteroids.sample(n=num_non_hazardous, replace=True, random_state=42)
+        # Combine sampled hazardous with all non-hazardous asteroids
+        balanced_df = pd.concat([non_hazardous_asteroids, sampled_hazardous])
+
+    print ("AAAAAAA")
+    print(df)
+    
+    # Shuffle the dataset
+    balanced_df = balanced_df.sample(frac=1, random_state=42).reset_index(drop=True)
+    
+    return balanced_df
+
+
 
 def train_model(dataframe):
     # Train a random forest classifier model using the provided DataFrame.
@@ -62,7 +100,7 @@ def train_model(dataframe):
     # Train the model
     model = RandomForestClassifier()
     model.fit(X_train, y_train)
-    print("model trained")
+    print("Model trained")
     return model, X_test, y_test
 
 def evaluate_model(model, X_test, y_test):
@@ -109,6 +147,7 @@ def predict_danger(model, absolute_magnitude, min_diameter, max_diameter, miss_d
 if __name__ == "__main__":
     neo_data = load_neo_data()
     df = preprocess_data(neo_data)
+    balance_dataset (df)
     model, X_test, y_test = train_model(df)
     accuracy = evaluate_model(model, X_test, y_test)
     save_feature_importance_plot(model, df, 'frontend/static/feature_importance_plot.png')

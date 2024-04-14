@@ -1,9 +1,10 @@
 from flask import Flask, jsonify, render_template, request
-from model.model import load_neo_data, preprocess_data, train_model, evaluate_model, save_feature_importance_plot, predict_danger, model
+from model.model import load_neo_data, preprocess_data, train_model, evaluate_model, save_feature_importance_plot, predict_danger, balance_dataset, model
 
 # Ausführen von Code aus model.py
 neo_data = load_neo_data()  # Laden der NEO-Daten
 df = preprocess_data(neo_data)  # Vorverarbeitung der Daten
+balance_dataset (df)
 model, X_test, y_test = train_model(df)  # Trainieren des Modells
 accuracy = evaluate_model(model, X_test, y_test)  # Evaluieren der Modellgenauigkeit
 save_feature_importance_plot(model, df, 'frontend/static/feature_importance_plot.png')  # Speichern des Feature-Importance-Plots
