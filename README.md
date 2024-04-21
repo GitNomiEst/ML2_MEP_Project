@@ -1,7 +1,6 @@
 # Machine Learning 2 - MEP Project
 
-## 1. What is the problem you are trying to solve? 
-##    What is the motivation behind it? Why is your project relevant?
+## 1. What is the problem you are trying to solve? What is the motivation behind it? Why is your project relevant?
 The problem at hand revolves around assessing the potential threat posed by asteroids to Earth. Specifically, the challenge entails accurately predicting whether a given asteroid possesses characteristics that classify it as "dangerous" or not, in terms of its potential impact on our planet. This prediction involves a multi-faceted analysis of various parameters associated with the asteroid's magnitude, diameter, miss distance, and relative velocity.
 
 The motivation behind this project is deeply rooted in the imperative to safeguard our planet and its inhabitants from potential cosmic hazards. While asteroid impacts are rare events on human timescales, they have the potential to cause catastrophic consequences, including widespread destruction, loss of life, and significant disruptions to ecosystems and global economies. Historic events, such as the Chelyabinsk meteor in 2013 and the extinction event that wiped out the dinosaurs, underscore the importance of proactive measures to mitigate the risks associated with near-Earth objects (NEOs).
