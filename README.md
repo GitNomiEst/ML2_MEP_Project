@@ -31,16 +31,14 @@ To further understand the factors influencing the model's predictions, we visual
 
 In terms of validation, the results were benchmarked against standard performance metrics for classification tasks. The achieved accuracy, precision, and recall scores surpass typical thresholds for satisfactory model performance, indicating the robustness and reliability of the approach. Moreover, the feature importance plot provided additional validation by elucidating the key drivers behind the model's predictions, thereby enhancing the interpretability and trustworthiness of the findings.
 
-
-## Spec's (stable funtioning application):
+## Spec's (stable funtioning application)
 - OS: running on Windows 11 Home
 - Processor / RAM: Intel Core i7-1185G7, 16 GB RAM
 - IDE used: Visual Studio Code (VSC) > developed by Microsoft
 
-## Instructions:
+## Instructions
 Start app: Flask run
 App starts on: http://localhost:5000/
 
-
-## Supporting commands:
+## Supporting commands
 Update requirements: pip freeze > requirements.txt
