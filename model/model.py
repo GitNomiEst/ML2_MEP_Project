@@ -2,10 +2,13 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pickle
 from pymongo import MongoClient
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix,  precision_recall_curve, roc_curve, f1_score, roc_auc_score, auc, roc_curve
+
+
 
 #COMMENTED OUT AS DATA SHALL BE LOADED FROM MONGO DB TO NOT EXCEED THE NASA API LIMIT
 #def load_neo_data(api_key):
@@ -98,7 +101,13 @@ def train_model(dataframe):
     model = RandomForestClassifier()
     model.fit(X_train, y_train)
     print("Model trained")
+    
+    # Save the trained model to a file
+    with open('trained_model.pkl', 'wb') as file:
+        pickle.dump(model, file)
+    
     return model, X_test, y_test
+
 
 
 
