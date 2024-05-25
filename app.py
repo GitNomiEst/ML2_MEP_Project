@@ -23,12 +23,18 @@ def main_page():
 # Seite des Modells
 @app.route('/model.html')
 def model_page():
-    return render_template('model.html')
+    neo_data = load_neo_data()
+    df = preprocess_data(neo_data)
+    balanced_df = balance_dataset(df)
+    model, X_test, y_test = train_model(balanced_df)
+    accuracy, precision, recall, cm = evaluate_model(model, X_test, y_test)
+    
+    return render_template('model.html', accuracy=accuracy, precision=precision, recall=recall, cm=cm)
 
 # API-Endpunkt für die Vorhersage
 @app.route('/predict', methods=['POST'])
 def predict():
-    data = request.json  # Daten aus der Anfrage erhalten
+    data = request.json
 
     # Formulardaten erhalten
     absolute_magnitude = float(data['absolute-magnitude'])

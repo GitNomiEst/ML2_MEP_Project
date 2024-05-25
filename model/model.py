@@ -102,14 +102,16 @@ def train_model(dataframe):
     print("Model trained")
     return model, X_test, y_test
 
+
+
 def evaluate_model(model, X_test, y_test):
     predictions = model.predict(X_test)
 
-    # Model evaluation
-    accuracy = accuracy_score(y_test, predictions)
-    precision = precision_score(y_test, predictions)
-    recall = recall_score(y_test, predictions)
-
+    # Model evaluation & round numbers
+    accuracy = round(accuracy_score(y_test, predictions), 2)
+    precision = round(precision_score(y_test, predictions), 2)
+    recall = round(recall_score(y_test, predictions), 2)
+    
     # Confusion matrix
     cm = confusion_matrix(y_test, predictions)
     plt.figure(figsize=(8, 6))
@@ -133,8 +135,10 @@ def evaluate_model(model, X_test, y_test):
     print("Accuracy: ", accuracy)
     print("Precision: ", precision)
     print("Recall: ", recall)
+    
 
-    return accuracy, precision, recall
+
+    return accuracy, precision, recall, cm
 
 def save_feature_importance_plot(model, dataframe, plot_filename):
     # Plot feature importance

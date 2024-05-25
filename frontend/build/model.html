@@ -45,8 +45,16 @@
         <h2 class="main-title">Model</h2>
         <h2 class="weather-title">Dangerous Asteorids</h2>
 
+        <div class="model-metrics">
+            <br>
+            <h3>Metrics</h3>
+            <p>
+                <strong>Accuracy:</strong> {{ accuracy }}<br>
+                <strong>Precision:</strong> {{ precision }}<br>
+                <strong>Recall:</strong> {{ recall }}
+            </p>
+        </div>
 
-        <!-- Plots -->
         <div class="plots-container">
             <div class="plot">
                 <img src="static/confusion_matrix.png" alt="Confusion Matrix">
@@ -62,32 +70,7 @@
             </div>
         </div>
 
-        <!-- Explanation of model.py -->
-        <div class="model-explanation">
-            <br>
-            <h3>Explanation of the model</h3>
-            <p>
-                The Python script, <code>model.py</code>, is responsible for training a machine learning model to
-                classify asteroids based on their features. <br>Let's break it down the main functions:
-                <br><br>
-                <strong>load_neo_data():</strong> Connects to a MongoDB database to fetch Near-Earth Object (NEO)
-                data.
-                <br>
-                <strong>preprocess_data():</strong> Processes the NEO data into a format suitable for training a
-                machine learning model.
-                <br>
-                <strong>train_model():</strong> Trains a Random Forest Classifier model using the preprocessed data.
-                <br>
-                <strong>evaluate_model():</strong> Evaluates the trained model's accuracy using testing data.
-                <br>
-                <strong>save_feature_importance_plot():</strong> Generates and saves a plot showing the importance
-                of each feature in predicting asteroid hazard.
-                <br>
-                <strong>predict_danger():</strong> Predicts the hazard level of a new asteroid using the trained
-                model.
-                </ul>
-            </p>
-        </div>
+
 
     </div>
 </body>
