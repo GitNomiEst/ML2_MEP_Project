@@ -5,7 +5,7 @@ import seaborn as sns
 from pymongo import MongoClient
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix,  precision_recall_curve
+from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix,  precision_recall_curve, roc_curve, f1_score, roc_auc_score, auc, roc_curve
 
 #COMMENTED OUT AS DATA SHALL BE LOADED FROM MONGO DB TO NOT EXCEED THE NASA API LIMIT
 #def load_neo_data(api_key):
@@ -71,19 +71,17 @@ def balance_dataset(df):
     num_hazardous = len(hazardous_asteroids)
     num_non_hazardous = len(non_hazardous_asteroids)
     
-    # Undersampling or oversampling
-    if num_hazardous < num_non_hazardous:  # Undersampling
-        # Sample non-hazardous asteroids equal to the number of hazardous ones
+    if num_hazardous < num_non_hazardous: #undersampling
         sampled_non_hazardous = non_hazardous_asteroids.sample(n=num_hazardous, random_state=42)
-        # Combine sampled non-hazardous with all hazardous asteroids
         balanced_df = pd.concat([sampled_non_hazardous, hazardous_asteroids])
-    else:  # Oversampling
-        # Sample hazardous asteroids with replacement equal to the number of non-hazardous ones
+        
+    else: # Oversampling
         sampled_hazardous = hazardous_asteroids.sample(n=num_non_hazardous, replace=True, random_state=42)
-        # Combine sampled hazardous with all non-hazardous asteroids
         balanced_df = pd.concat([non_hazardous_asteroids, sampled_hazardous])
     
-    # Shuffle the dataset
+    
+    print("hello it works")
+    # Shuffle dataset
     balanced_df = balanced_df.sample(frac=1, random_state=42).reset_index(drop=True)
     
     return balanced_df
@@ -112,6 +110,9 @@ def evaluate_model(model, X_test, y_test, df):
     precision = round(precision_score(y_test, predictions), 2)
     recall = round(recall_score(y_test, predictions), 2)
     
+    # Compute F1 score
+    f1 = round(f1_score(y_test, predictions), 2)
+    
     # Confusion matrix
     cm = confusion_matrix(y_test, predictions)
     plt.figure(figsize=(8, 6))
@@ -124,6 +125,7 @@ def evaluate_model(model, X_test, y_test, df):
 
     # Precision-Recall curve
     precision_curve, recall_curve, _ = precision_recall_curve(y_test, predictions)
+    pr_auc = round(auc(recall_curve, precision_curve), 2)
     plt.figure(figsize=(8, 6))
     plt.plot(recall_curve, precision_curve, marker='.')
     plt.xlabel('Recall')
@@ -134,7 +136,7 @@ def evaluate_model(model, X_test, y_test, df):
     
     # Feature importance
     feature_importances = model.feature_importances_
-    plt.bar(dataframe.columns[:-1], feature_importances)
+    plt.bar(df.columns[:-1], feature_importances)
     plt.xlabel('Features')
     plt.ylabel('Importance')
     plt.title('Feature Importance')
@@ -143,12 +145,25 @@ def evaluate_model(model, X_test, y_test, df):
     plt.savefig('frontend/static/feature_importance_plot.png')
     print("Saved Feature Importance plot")
     
-    print("Accuracy: ", accuracy)
-    print("Precision: ", precision)
-    print("Recall: ", recall)
-    
+   # ROC curve
+    fpr, tpr, _ = roc_curve(y_test, predictions)
+    roc_auc = round(auc(fpr, tpr), 2)
+    plt.figure(figsize=(8, 6))
+    plt.plot(fpr, tpr, marker='.')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('ROC Curve')
+    plt.savefig('frontend/static/roc_curve')
+    print("Saved ROC Curve plot")
 
-    return accuracy, precision, recall, cm
+    print("Accuracy:", accuracy)
+    print("Precision:", precision)
+    print("Recall:", recall)
+    print("F1 Score:", f1)
+    print("AUC-ROC:", roc_auc)
+    print("AUC-PR:", pr_auc)
+
+    return accuracy, precision, recall, f1, roc_auc, pr_auc, cm
 
 
 def predict_danger(model, absolute_magnitude, min_diameter, max_diameter, miss_distance, relative_velocity):
@@ -165,7 +180,7 @@ def predict_danger(model, absolute_magnitude, min_diameter, max_diameter, miss_d
 if __name__ == "__main__":
     neo_data = load_neo_data()
     df = preprocess_data(neo_data)
-    balance_dataset (df)
+    balanced_dataset = balance_dataset (df)
     model, X_test, y_test = train_model(df)
-    accuracy = evaluate_model(model, X_test, y_test, df)
+    accuracy = evaluate_model(model, X_test, y_test, balanced_dataset)
 

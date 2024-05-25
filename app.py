@@ -1,35 +1,31 @@
 from flask import Flask, jsonify, render_template, request
-from model.model import load_neo_data, preprocess_data, train_model, evaluate_model, save_feature_importance_plot, predict_danger, balance_dataset, model
+from model.model import load_neo_data, preprocess_data, train_model, evaluate_model, predict_danger, balance_dataset, model
 
-# Ausführen von Code aus model.py
-neo_data = load_neo_data()  # Laden der NEO-Daten
-df = preprocess_data(neo_data)  # Vorverarbeitung der Daten
-balance_dataset (df)
-model, X_test, y_test = train_model(df)  # Trainieren des Modells
-accuracy = evaluate_model(model, X_test, y_test)  # Evaluieren der Modellgenauigkeit
-save_feature_importance_plot(model, df, 'frontend/static/feature_importance_plot.png')  # Speichern des Feature-Importance-Plots
+neo_data = load_neo_data()
+df = preprocess_data(neo_data)
+balanced_dataset = balance_dataset (df)
+model, X_test, y_test = train_model(df)
+accuracy = evaluate_model(model, X_test, y_test, balanced_dataset)
 
-# Initialisierung der Flask-App
 app = Flask(__name__, static_url_path='/', static_folder='frontend', template_folder='frontend/build')
 
 # Routen für die verschiedenen Seiten der Webanwendung definieren
-
-# Hauptseite
+# Main
 @app.route('/')
 @app.route('/index.html')
 def main_page():
     return render_template('index.html')
 
-# Seite des Modells
+# Model page
 @app.route('/model.html')
 def model_page():
     neo_data = load_neo_data()
     df = preprocess_data(neo_data)
     balanced_df = balance_dataset(df)
     model, X_test, y_test = train_model(balanced_df)
-    accuracy, precision, recall, cm = evaluate_model(model, X_test, y_test)
+    accuracy, precision, recall, f1, auc_roc, auc_pr, cm = evaluate_model(model, X_test, y_test, balanced_df)
     
-    return render_template('model.html', accuracy=accuracy, precision=precision, recall=recall, cm=cm)
+    return render_template('model.html', accuracy=accuracy, precision=precision, recall=recall, f1=f1, auc_roc=auc_roc, auc_pr=auc_pr, cm=cm)
 
 # API-Endpunkt für die Vorhersage
 @app.route('/predict', methods=['POST'])
