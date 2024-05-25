@@ -104,7 +104,7 @@ def train_model(dataframe):
 
 
 
-def evaluate_model(model, X_test, y_test):
+def evaluate_model(model, X_test, y_test, df):
     predictions = model.predict(X_test)
 
     # Model evaluation & round numbers
@@ -122,7 +122,7 @@ def evaluate_model(model, X_test, y_test):
     plt.savefig('frontend/static/confusion_matrix')
     print("Saved Confusion Matrix")
 
-  # Precision-Recall curve
+    # Precision-Recall curve
     precision_curve, recall_curve, _ = precision_recall_curve(y_test, predictions)
     plt.figure(figsize=(8, 6))
     plt.plot(recall_curve, precision_curve, marker='.')
@@ -132,16 +132,7 @@ def evaluate_model(model, X_test, y_test):
     plt.savefig('frontend/static/precision_recall_curve')
     print("Saved Precision-Recall Curve plot")
     
-    print("Accuracy: ", accuracy)
-    print("Precision: ", precision)
-    print("Recall: ", recall)
-    
-
-
-    return accuracy, precision, recall, cm
-
-def save_feature_importance_plot(model, dataframe, plot_filename):
-    # Plot feature importance
+    # Feature importance
     feature_importances = model.feature_importances_
     plt.bar(dataframe.columns[:-1], feature_importances)
     plt.xlabel('Features')
@@ -149,10 +140,15 @@ def save_feature_importance_plot(model, dataframe, plot_filename):
     plt.title('Feature Importance')
     plt.xticks(rotation=45)
     plt.tight_layout()
-
-    # Save the plot
     plt.savefig('frontend/static/feature_importance_plot.png')
     print("Saved Feature Importance plot")
+    
+    print("Accuracy: ", accuracy)
+    print("Precision: ", precision)
+    print("Recall: ", recall)
+    
+
+    return accuracy, precision, recall, cm
 
 
 def predict_danger(model, absolute_magnitude, min_diameter, max_diameter, miss_distance, relative_velocity):
@@ -171,6 +167,5 @@ if __name__ == "__main__":
     df = preprocess_data(neo_data)
     balance_dataset (df)
     model, X_test, y_test = train_model(df)
-    accuracy = evaluate_model(model, X_test, y_test)
-    save_feature_importance_plot(model, df, 'frontend/static/feature_importance_plot.png')
+    accuracy = evaluate_model(model, X_test, y_test, df)
 
