@@ -120,16 +120,21 @@ def evaluate_model(model, X_test, y_test):
     plt.savefig('frontend/static/confusion_matrix')
     print("Saved Confusion Matrix")
 
-    # Precision-Recall curve
+  # Precision-Recall curve
     precision_curve, recall_curve, _ = precision_recall_curve(y_test, predictions)
+    plt.figure(figsize=(8, 6))
     plt.plot(recall_curve, precision_curve, marker='.')
     plt.xlabel('Recall')
     plt.ylabel('Precision')
     plt.title('Precision-Recall Curve')
     plt.savefig('frontend/static/precision_recall_curve')
     print("Saved Precision-Recall Curve plot")
+    
+    print("Accuracy: ", accuracy)
+    print("Precision: ", precision)
+    print("Recall: ", recall)
 
-    return accuracy
+    return accuracy, precision, recall
 
 def save_feature_importance_plot(model, dataframe, plot_filename):
     # Plot feature importance

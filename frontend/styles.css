@@ -52,3 +52,19 @@ body {
     color: white;
     font-weight: bold;
 }
+
+.plots-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; /* Distribute space evenly between plots */
+}
+
+.plot {
+    width: 30%;
+}
+
+.plot img {
+    width: 100%;
+    height: auto;
+    margin: 0;
+}
