@@ -109,8 +109,6 @@ def train_model(dataframe):
     return model, X_test, y_test
 
 
-
-
 def evaluate_model(model, X_test, y_test, df):
     predictions = model.predict(X_test)
 
