@@ -1,10 +1,11 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 from pymongo import MongoClient
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, precision_score, recall_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix,  precision_recall_curve
 
 #COMMENTED OUT AS DATA SHALL BE LOADED FROM MONGO DB TO NOT EXCEED THE NASA API LIMIT
 #def load_neo_data(api_key):
@@ -19,7 +20,7 @@ model = RandomForestClassifier()
 
 def load_neo_data():
     # Connect to MongoDB
-    client = MongoClient(f"mongodb+srv://nomi:012no.AhM@nasa.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000")
+    client = MongoClient(f"mongodb://localhost:27017/")
     db = client['nasa']
     collection = db['nasa']
 
@@ -61,6 +62,7 @@ def preprocess_data(neo_data):
 # Then continue with training the model using the balanced dataset model, X_test, y_test = train_model(balanced_df)
 
 def balance_dataset(df):
+    
     # Separate hazardous and non-hazardous asteroids
     hazardous_asteroids = df[df['is_potentially_hazardous'] == True]
     non_hazardous_asteroids = df[df['is_potentially_hazardous'] == False]
@@ -80,9 +82,6 @@ def balance_dataset(df):
         sampled_hazardous = hazardous_asteroids.sample(n=num_non_hazardous, replace=True, random_state=42)
         # Combine sampled hazardous with all non-hazardous asteroids
         balanced_df = pd.concat([non_hazardous_asteroids, sampled_hazardous])
-
-    print ("AAAAAAA")
-    print(df)
     
     # Shuffle the dataset
     balanced_df = balanced_df.sample(frac=1, random_state=42).reset_index(drop=True)
@@ -104,7 +103,6 @@ def train_model(dataframe):
     return model, X_test, y_test
 
 def evaluate_model(model, X_test, y_test):
-    # Nachdem das Modell trainiert wurde
     predictions = model.predict(X_test)
 
     # Model evaluation
@@ -112,9 +110,24 @@ def evaluate_model(model, X_test, y_test):
     precision = precision_score(y_test, predictions)
     recall = recall_score(y_test, predictions)
 
-    print("Precision:", precision)
-    print("Recall:", recall)
-    print("Accuracy:", accuracy)
+    # Confusion matrix
+    cm = confusion_matrix(y_test, predictions)
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False)
+    plt.xlabel("Predicted")
+    plt.ylabel("True")
+    plt.title("Confusion Matrix")
+    plt.savefig('frontend/static/confusion_matrix')
+    print("Saved Confusion Matrix")
+
+    # Precision-Recall curve
+    precision_curve, recall_curve, _ = precision_recall_curve(y_test, predictions)
+    plt.plot(recall_curve, precision_curve, marker='.')
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title('Precision-Recall Curve')
+    plt.savefig('frontend/static/precision_recall_curve')
+    print("Saved Precision-Recall Curve plot")
 
     return accuracy
 
@@ -129,7 +142,7 @@ def save_feature_importance_plot(model, dataframe, plot_filename):
     plt.tight_layout()
 
     # Save the plot
-    plt.savefig(plot_filename)
+    plt.savefig('frontend/static/feature_importance_plot.png')
     print("Saved Feature Importance plot")
 
 

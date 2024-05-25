@@ -31,7 +31,7 @@ def get_neo_data(api_key):
 def save_to_mongodb(data):
     if data is not None and isinstance(data, list) and data:
         # Initialize MongoDB client with appropriate connection string
-        client = MongoClient(f"mongodb+srv://nomi:***@nasa.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000")
+        client = MongoClient(f"mongodb://localhost:27017/")
         
         db = client['nasa']
         collection = db['nasa']
@@ -42,6 +42,6 @@ def save_to_mongodb(data):
 
 
 if __name__ == "__main__":
-    api_key = "..." #To Do before run: enter API Key here
+    api_key = "tWYzV18g3nK6SxabixFWKIJY9d2NHwGUctV8Qjri" #To Do before run: enter API Key here
     neo_data = get_neo_data(api_key)
     save_to_mongodb(neo_data)
