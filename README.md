@@ -9,7 +9,7 @@ The motivation behind this project is deeply rooted in the imperative to safegua
 The Data is collected directly from the NASA API / Asteroids - NeoWs / Neo - Feed (Link: https://api.nasa.gov/). It is therefore required to generate an API key and save it to a .env file where it can be collected from the code. Finally the data is saved to MongoDB, from where it can be read and used in the model.
 
 ## 3. Modeling
-The model utilizes a Random Forest Classifier. In this context, the model is trained to predict whether a given asteroid is potentially hazardous or not based on various features extracted from near-Earth object (NEO) data.
+The model utilizes a Random Forest Classifier. In this context, the model is trained to predict whether a given asteroid is potentially hazardous or not, based on various features extracted from near-Earth object (NEO) data.
 
 The preprocessing stage involves extracting relevant features such as absolute magnitude, estimated diameter, miss distance, and relative velocity from the NEO data. These features serve as input variables for the model, enabling it to learn patterns and relationships indicative of the hazardous nature of asteroids.
 
@@ -28,19 +28,3 @@ The model exhibited high performance, as evidenced by the evaluation metrics obt
 To further understand the factors influencing the model's predictions, we visualized the feature importance using a bar plot. This analysis revealed that the relative velocity of asteroids during close approach emerged as the most significant feature in determining their hazard level, followed by absolute magnitude and miss distance. This insight underscores the importance of velocity dynamics in assessing asteroid threat levels and aligns with established astronomical principles.
 
 In terms of validation, the results were benchmarked against standard performance metrics for classification tasks. The achieved accuracy, precision, and recall scores surpass typical thresholds for satisfactory model performance, indicating the robustness and reliability of the approach. Moreover, the feature importance plot provided additional validation by elucidating the key drivers behind the model's predictions, thereby enhancing the interpretability and trustworthiness of the findings.
-
-## Spec's (stable funtioning application)
-- OS: running on Windows 11 Home
-- Processor / RAM: Intel Core i7-1185G7, 16 GB RAM
-- IDE used: Visual Studio Code (VSC) > developed by Microsoft
-
-## Instructions
-Start app: Flask run
-App starts on: http://localhost:5000/
-
-## Supporting commands
-Update requirements: pip freeze > requirements.txt
-
-## Access to MongoDB & API Key
-Mongo DB access: please get in touch with kaeseno1@students.zhaw.ch to get the password (required in model.py & api.py).
-API Key: please generate your own API key if you want to load more data into the mongo DB.
