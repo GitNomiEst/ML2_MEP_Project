@@ -13,7 +13,7 @@ App starts on: http://localhost:5000/
 Update requirements: pip freeze > requirements.txt
 
 ## Access to MongoDB & API Key
-Mongo DB access: please get in touch with kaeseno1@students.zhaw.ch to get the password (required in model.py & api.py). Please do not share this secret with anyone else.
+Mongo DB access: please get in touch with kaeseno1@students.zhaw.ch to get the password (required in model.py & api.py). Please do not share this secret with anyone else.ad
 API Key: please generate your own API key if you want to load more data into the mongo DB.
 
 ## Questions?
