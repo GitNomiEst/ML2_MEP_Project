@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle
 from pymongo import MongoClient
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix,  precision_recall_curve, roc_curve, f1_score, roc_auc_score, auc, roc_curve
 
@@ -21,7 +21,7 @@ model = RandomForestClassifier()
 
 def load_neo_data():
     # Connect to MongoDB
-    client = MongoClient(f"mongodb+srv://kaeseno1:<password>@cluster0.4pnoho7.mongodb.net/")
+    client = MongoClient(f"mongodb+srv://kaeseno1:PW@cluster0.4pnoho7.mongodb.net/")
     db = client['nasa']
     collection = db['nasa']
 
@@ -81,19 +81,49 @@ def balance_dataset(df):
     balanced_df = balanced_df.sample(frac=1, random_state=42).reset_index(drop=True)
     print("Dataset balanced")
 
-    
+  
     return balanced_df
 
+def tune_hyperparameters(X_train, y_train):
+    param_grid = {
+        'n_estimators': [100, 200, 300],
+        'max_depth': [10, 20, 30, None],
+        'min_samples_split': [2, 5, 10],
+        'min_samples_leaf': [1, 2, 4]
+    }
+    grid_search = GridSearchCV(RandomForestClassifier(random_state=42), param_grid, cv=5, scoring='accuracy')
+    grid_search.fit(X_train, y_train)
+    print(f'Best parameters: {grid_search.best_params_}')
+    return grid_search.best_estimator_
+
+
+
+def cross_validate_model(model, X, y):
+    scores = cross_val_score(model, X, y, cv=5, scoring='accuracy')
+    print(f'Cross-validation accuracy scores: {scores}')
+    print(f'Mean accuracy: {np.mean(scores)}, Std: {np.std(scores)}')
+    return scores
 
 
 def train_model(dataframe):
-    # Train a random forest classifier model using the provided DataFrame.
-    # Split the data into training and test sets
-    X_train, X_test, y_train, y_test = train_test_split(dataframe.drop('is_potentially_hazardous', axis=1), 
-                                                        dataframe['is_potentially_hazardous'], test_size=0.2, random_state=42)
+    print("starting training")
+    X = dataframe.drop('is_potentially_hazardous', axis=1)
+    y = dataframe['is_potentially_hazardous']
 
-    # Train the model
-    model = RandomForestClassifier()
+    # Split the data
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    print("Tuning hyperparams")
+    
+    # Tune hyperparameters
+    model = tune_hyperparameters(X_train, y_train)
+    
+    print("Cross validate model")
+    
+    # Cross-validate the model
+    cross_validate_model(model, X, y)
+    
+    # Train the model with the best parameters
     model.fit(X_train, y_train)
     print("Model trained")
     
@@ -197,6 +227,6 @@ if __name__ == "__main__":
     neo_data = load_neo_data()
     df = preprocess_data(neo_data)
     balanced_dataset = balance_dataset (df)
+    
     model, X_test, y_test = train_model(df)
-    accuracy = evaluate_model(model, X_test, y_test, balanced_dataset)
-
+    accuracy = evaluate_model(model, X_test, y_test, balanced_dataset)    

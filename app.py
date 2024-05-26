@@ -3,9 +3,9 @@ from model.model import load_neo_data, preprocess_data, train_model, evaluate_mo
 
 neo_data = load_neo_data()
 df = preprocess_data(neo_data)
-balanced_dataset = balance_dataset (df)
-model, X_test, y_test = train_model(df)
-accuracy = evaluate_model(model, X_test, y_test, balanced_dataset)
+balanced_df = balance_dataset(df)
+model, X_test, y_test = train_model(balanced_df)
+accuracy, precision, recall, f1, auc_roc, auc_pr, cm = evaluate_model(model, X_test, y_test, balanced_df)
 
 app = Flask(__name__, static_url_path='/', static_folder='frontend', template_folder='frontend/build')
 
@@ -19,11 +19,6 @@ def main_page():
 # Model page
 @app.route('/model.html')
 def model_page():
-    neo_data = load_neo_data()
-    df = preprocess_data(neo_data)
-    balanced_df = balance_dataset(df)
-    model, X_test, y_test = train_model(balanced_df)
-    accuracy, precision, recall, f1, auc_roc, auc_pr, cm = evaluate_model(model, X_test, y_test, balanced_df)
     
     return render_template('model.html', accuracy=accuracy, precision=precision, recall=recall, f1=f1, auc_roc=auc_roc, auc_pr=auc_pr, cm=cm)
 
