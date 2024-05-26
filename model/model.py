@@ -8,8 +8,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix,  precision_recall_curve, roc_curve, f1_score, roc_auc_score, auc, roc_curve
 
-
-
 #COMMENTED OUT AS DATA SHALL BE LOADED FROM MONGO DB TO NOT EXCEED THE NASA API LIMIT
 #def load_neo_data(api_key):
     #print("Start Data load from API...")
@@ -29,13 +27,14 @@ def load_neo_data():
 
     # Fetch data from MongoDB
     neo_data = list(collection.find())
-    print("Data from mongo loaded")
+    print("\nProgress / Completed tasks:")
+    print("Data loaded from DB")
 
     return neo_data
 
 
 def preprocess_data(neo_data):
-    print (neo_data)
+    #print (neo_data)
     
     features = []
     labels = []
@@ -60,10 +59,6 @@ def preprocess_data(neo_data):
 
     return df
 
-# Usage of balance dataset:
-# After preprocessing data, call balance_dataset function to balance the dataset balanced_df = balance_dataset(df)
-# Then continue with training the model using the balanced dataset model, X_test, y_test = train_model(balanced_df)
-
 def balance_dataset(df):
     
     # Separate hazardous and non-hazardous asteroids
@@ -77,15 +72,15 @@ def balance_dataset(df):
     if num_hazardous < num_non_hazardous: #undersampling
         sampled_non_hazardous = non_hazardous_asteroids.sample(n=num_hazardous, random_state=42)
         balanced_df = pd.concat([sampled_non_hazardous, hazardous_asteroids])
-        
-    else: # Oversampling
+         
+    if num_hazardous > num_non_hazardous: 
         sampled_hazardous = hazardous_asteroids.sample(n=num_non_hazardous, replace=True, random_state=42)
-        balanced_df = pd.concat([non_hazardous_asteroids, sampled_hazardous])
+        balanced_df = pd.concat([non_hazardous_asteroids, sampled_hazardous])   
     
-    
-    print("hello it works")
     # Shuffle dataset
     balanced_df = balanced_df.sample(frac=1, random_state=42).reset_index(drop=True)
+    print("Dataset balanced")
+
     
     return balanced_df
 
@@ -129,17 +124,27 @@ def evaluate_model(model, X_test, y_test, df):
     plt.title("Confusion Matrix")
     plt.savefig('frontend/static/confusion_matrix')
     print("Saved Confusion Matrix")
+    
+    # Clear any existing figures
+    plt.clf()
+
+
+    # Generate probability predictions
+    probabilities = model.predict_proba(X_test)[:, 1]
 
     # Precision-Recall curve
-    precision_curve, recall_curve, _ = precision_recall_curve(y_test, predictions)
+    precision_curve, recall_curve, _ = precision_recall_curve(y_test, probabilities)
     pr_auc = round(auc(recall_curve, precision_curve), 2)
     plt.figure(figsize=(8, 6))
     plt.plot(recall_curve, precision_curve, marker='.')
     plt.xlabel('Recall')
     plt.ylabel('Precision')
-    plt.title('Precision-Recall Curve')
-    plt.savefig('frontend/static/precision_recall_curve')
+    plt.title(f'Precision-Recall Curve (AUC = {pr_auc})')
+    plt.savefig('frontend/static/precision_recall_curve.png')
     print("Saved Precision-Recall Curve plot")
+
+    
+    plt.clf()
     
     # Feature importance
     feature_importances = model.feature_importances_
@@ -152,16 +157,20 @@ def evaluate_model(model, X_test, y_test, df):
     plt.savefig('frontend/static/feature_importance_plot.png')
     print("Saved Feature Importance plot")
     
-   # ROC curve
-    fpr, tpr, _ = roc_curve(y_test, predictions)
+    plt.clf()
+    
+    # ROC curve
+    fpr, tpr, _ = roc_curve(y_test, probabilities)
     roc_auc = round(auc(fpr, tpr), 2)
     plt.figure(figsize=(8, 6))
     plt.plot(fpr, tpr, marker='.')
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.title('ROC Curve')
-    plt.savefig('frontend/static/roc_curve')
+    plt.title(f'ROC Curve (AUC = {roc_auc})')
+    plt.savefig('frontend/static/roc_curve.png')
     print("Saved ROC Curve plot")
+    
+    print("\nMetrics:")
 
     print("Accuracy:", accuracy)
     print("Precision:", precision)

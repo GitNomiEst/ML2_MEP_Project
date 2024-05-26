@@ -8,12 +8,12 @@ def get_neo_data(api_key):
 
     base_url = "https://api.nasa.gov/neo/rest/v1/feed"
     next_url = base_url
-    print(next_url)
+    #print(next_url)
     while x<=10:
         x+=1
         print("entries loaded.. continues")
         response = requests.get(next_url, params={"api_key": api_key})
-        print(response.status_code)
+        #print(response.status_code)
         if response.status_code == 200:
             neo_data = response.json()
             all_data.append(neo_data)

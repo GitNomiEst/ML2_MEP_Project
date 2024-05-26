@@ -92,6 +92,9 @@
         <div id="prediction-result"></div> <br>
         <button id="clear-input" class="btn btn-secondary">Clear Input</button>
     </div>
+    <footer>
+        <p>&copy; 2024 Noémie Käser</p>
+    </footer>
 </body>
 
 <script>
@@ -123,10 +126,8 @@
     document.getElementById('asteroid-form').addEventListener('submit', function (event) {
         event.preventDefault(); // Prevent the default form submission
         if (validateForm()) {
-            // Get the form data
             const formData = new FormData(this);
 
-            // Convert form data to JSON
             const jsonData = {};
             formData.forEach((value, key) => {
                 jsonData[key] = value;
