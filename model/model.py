@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -18,10 +19,18 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, confu
 # RandomForestClassifier
 model = RandomForestClassifier()
 
+#use trained model
+def use_trained_model():
+    model_file = os.path.join('model', 'model.pkl')
+
+    with open(model_file, 'rb') as file:
+        loaded_model = pickle.load(file)
+    
+    return loaded_model
 
 def load_neo_data():
     # Connect to MongoDB
-    client = MongoClient(f"mongodb+srv://kaeseno1:PW@cluster0.4pnoho7.mongodb.net/")
+    client = MongoClient(f"mongodb+srv://kaeseno1:pwt@cluster0.4pnoho7.mongodb.net/")
     db = client['nasa']
     collection = db['nasa']
 
@@ -128,7 +137,7 @@ def train_model(dataframe):
     print("Model trained")
     
     # Save the trained model to a file
-    with open('trained_model.pkl', 'wb') as file:
+    with open('newly_trained_model.pkl', 'wb') as file:
         pickle.dump(model, file)
     
     return model, X_test, y_test
@@ -217,6 +226,8 @@ def predict_danger(model, absolute_magnitude, min_diameter, max_diameter, miss_d
     input_data = pd.DataFrame([[absolute_magnitude, min_diameter, max_diameter, miss_distance, relative_velocity]],
                               columns=['absolute_magnitude_h', 'min_diameter_km', 'max_diameter_km', 'miss_distance_km', 'relative_velocity_km_hour'])
 
+    # Possiblity to use pretrained model:
+    # model = use_trained_model()
     # Make prediction using the trained model
     prediction = model.predict(input_data)
 

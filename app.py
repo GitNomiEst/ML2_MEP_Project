@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, render_template, request
-from model.model import load_neo_data, preprocess_data, train_model, evaluate_model, predict_danger, balance_dataset, model
+from model.model import load_neo_data, preprocess_data, train_model, evaluate_model, predict_danger, balance_dataset, use_trained_model, model
 
 neo_data = load_neo_data()
 df = preprocess_data(neo_data)
@@ -9,7 +9,6 @@ accuracy, precision, recall, f1, auc_roc, auc_pr, cm = evaluate_model(model, X_t
 
 app = Flask(__name__, static_url_path='/', static_folder='frontend', template_folder='frontend/build')
 
-# Routen für die verschiedenen Seiten der Webanwendung definieren
 # Main
 @app.route('/')
 @app.route('/index.html')
