@@ -30,7 +30,7 @@ def use_trained_model():
 
 def load_neo_data():
     # Connect to MongoDB
-    client = MongoClient(f"mongodb+srv://kaeseno1:pwt@cluster0.4pnoho7.mongodb.net/")
+    client = MongoClient(f"mongodb+srv://kaeseno1:eXuzhJ-ZV6KUH4t@cluster0.4pnoho7.mongodb.net/")
     db = client['nasa']
     collection = db['nasa']
 
@@ -222,9 +222,10 @@ def evaluate_model(model, X_test, y_test, df):
 
 
 def predict_danger(model, absolute_magnitude, min_diameter, max_diameter, miss_distance, relative_velocity):
-    # Preprocess input data
+    # Preprocess input data (old version with all attributes)
     input_data = pd.DataFrame([[absolute_magnitude, min_diameter, max_diameter, miss_distance, relative_velocity]],
                               columns=['absolute_magnitude_h', 'min_diameter_km', 'max_diameter_km', 'miss_distance_km', 'relative_velocity_km_hour'])
+
 
     # Possiblity to use pretrained model:
     # model = use_trained_model()

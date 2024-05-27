@@ -28,3 +28,31 @@ The model exhibited high performance, as evidenced by the evaluation metrics obt
 To further understand the factors influencing the model's predictions, we visualized the feature importance using a bar plot. This analysis revealed that the relative velocity of asteroids during close approach emerged as the most significant feature in determining their hazard level, followed by absolute magnitude and miss distance. This insight underscores the importance of velocity dynamics in assessing asteroid threat levels and aligns with established astronomical principles.
 
 In terms of validation, the results were benchmarked against standard performance metrics for classification tasks. The achieved accuracy, precision, and recall scores surpass typical thresholds for satisfactory model performance, indicating the robustness and reliability of the approach. Moreover, the feature importance plot provided additional validation by elucidating the key drivers behind the model's predictions, thereby enhancing the interpretability and trustworthiness of the findings.
+
+Model with all 5 attributes:
+• Accuracy: 0.93
+• Precision: 0.89
+• Recall: 1.0
+• F1 Score: 0.94
+• AUC-ROC: 0.99
+• AUC-PR: 0.99
+
+Model without miss distance:
+• Accuracy: 0.93
+• Precision: 0.91
+• Recall: 0.98
+• F1 Score: 0.94
+• AUC-ROC: 0.98
+• AUC-PR: 0.99
+
+Model without miss distance & relative velocity:
+Accuracy: 0.93
+Precision: 0.91
+Recall: 0.98
+F1 Score: 0.94
+AUC-ROC: 0.99
+AUC-PR: 0.99
+
+All three models had high accuracy, precision, recall, F1 score, and AUC-PR, indicating strong performance.
+Choice: If computational resources allow, I would choose the model with all 5 attributes because it ensures the highest level of safety by capturing all hazardous asteroids while maintaining strong performance across all metrics. However, if computational resources are limited or if minimizing false positives is a priority, the model without miss distance could be a suitable alternative, offering a good balance between precision and recall.
+
