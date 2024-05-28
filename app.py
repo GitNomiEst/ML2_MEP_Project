@@ -30,11 +30,10 @@ def predict():
     absolute_magnitude = float(data['absolute-magnitude'])
     min_diameter = float(data['min-diameter'])
     max_diameter = float(data['max-diameter'])
-    miss_distance = float(data['miss-distance'])
-    relative_velocity = float(data['relative-velocity'])
+
 
     # Gefahrenstufe vorhersagen
-    danger_level = predict_danger(model, absolute_magnitude, min_diameter, max_diameter, miss_distance, relative_velocity)
+    danger_level = predict_danger(model, absolute_magnitude, min_diameter, max_diameter)
 
     # Vorhersageergebnis zurückgeben
     if danger_level:

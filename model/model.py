@@ -5,15 +5,17 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle
 from pymongo import MongoClient
+from frontend.api import get_neo_data, save_to_mongodb
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix,  precision_recall_curve, roc_curve, f1_score, roc_auc_score, auc, roc_curve
 
 #COMMENTED OUT AS DATA SHALL BE LOADED FROM MONGO DB TO NOT EXCEED THE NASA API LIMIT
-#def load_neo_data(api_key):
+#def get_new_neo_data(api_key):
     #print("Start Data load from API...")
     #neo_data = get_neo_data(api_key)
     #print("Data loaded from API")
+    #save_to_mongodb(neo_data)
     #return neo_data
 
 # RandomForestClassifier
@@ -30,7 +32,7 @@ def use_trained_model():
 
 def load_neo_data():
     # Connect to MongoDB
-    client = MongoClient(f"mongodb+srv://kaeseno1:eXuzhJ-ZV6KUH4t@cluster0.4pnoho7.mongodb.net/")
+    client = MongoClient(f"mongodb+srv://kaeseno1:<pw>@cluster0.4pnoho7.mongodb.net/")
     db = client['nasa']
     collection = db['nasa']
 
@@ -55,14 +57,12 @@ def preprocess_data(neo_data):
                 features.append([
                     asteroid['absolute_magnitude_h'],
                     asteroid['estimated_diameter']['kilometers']['estimated_diameter_min'],
-                    asteroid['estimated_diameter']['kilometers']['estimated_diameter_max'],
-                    asteroid['close_approach_data'][0]['miss_distance']['kilometers'],
-                    asteroid['close_approach_data'][0]['relative_velocity']['kilometers_per_hour']
+                    asteroid['estimated_diameter']['kilometers']['estimated_diameter_max']
                 ])
                 labels.append(asteroid['is_potentially_hazardous_asteroid'])
 
     # Create a DataFrame from the extracted features and labels
-    df = pd.DataFrame(features, columns=['absolute_magnitude_h', 'min_diameter_km', 'max_diameter_km', 'miss_distance_km', 'relative_velocity_km_hour'])
+    df = pd.DataFrame(features, columns=['absolute_magnitude_h', 'min_diameter_km', 'max_diameter_km'])
     df['is_potentially_hazardous'] = labels
     print("Data preprocessed")
 
@@ -221,14 +221,15 @@ def evaluate_model(model, X_test, y_test, df):
     return accuracy, precision, recall, f1, roc_auc, pr_auc, cm
 
 
-def predict_danger(model, absolute_magnitude, min_diameter, max_diameter, miss_distance, relative_velocity):
+def predict_danger(model, absolute_magnitude, min_diameter, max_diameter):
     # Preprocess input data (old version with all attributes)
-    input_data = pd.DataFrame([[absolute_magnitude, min_diameter, max_diameter, miss_distance, relative_velocity]],
-                              columns=['absolute_magnitude_h', 'min_diameter_km', 'max_diameter_km', 'miss_distance_km', 'relative_velocity_km_hour'])
+    input_data = pd.DataFrame([[absolute_magnitude, min_diameter, max_diameter]],
+                              columns=['absolute_magnitude_h', 'min_diameter_km', 'max_diameter_km'])
 
 
     # Possiblity to use pretrained model:
     # model = use_trained_model()
+    
     # Make prediction using the trained model
     prediction = model.predict(input_data)
 

@@ -19,6 +19,35 @@ The training phase involves splitting the preprocessed data into training and te
 
 Finally, the trained model is capable of making predictions on new asteroid data, allowing users to assess the potential danger posed by asteroids based on their characteristics. This predictive capability serves as a valuable tool for planetary defense efforts and contributes to the understanding of the risks associated with near-Earth objects.
 
+(1) Model with all 5 attributes:
+• Accuracy: 0.93
+• Precision: 0.89
+• Recall: 1.0
+• F1 Score: 0.94
+• AUC-ROC: 0.99
+• AUC-PR: 0.99
+
+(2) Model without miss distance:
+• Accuracy: 0.93
+• Precision: 0.91
+• Recall: 0.98
+• F1 Score: 0.94
+• AUC-ROC: 0.98
+• AUC-PR: 0.99
+
+(3) Model without miss distance & relative velocity:
+Accuracy: 0.93
+Precision: 0.91
+Recall: 0.98
+F1 Score: 0.94
+AUC-ROC: 0.99
+AUC-PR: 0.99
+
+All three models had high accuracy, precision, recall, F1 score, and AUC-PR, indicating strong performance.
+Choice: I chose the model number (3) with only three attributes, as the miss distance & relative velocity had a relatively low feature importance score.
+
+After that I played around with the amount of data used in my model. As i was increasing this number I as well scored a better performance with only three attributes as it seemed to overfit, if I used all 5. 
+
 
 ## 4. Interpretation and Validation 
 Upon training the Random Forest Classifier model on NEO data, I proceeded to interpret and evaluate the performance of the model. The primary objective was to predict whether a given asteroid is potentially hazardous to Earth based on various features such as absolute magnitude, estimated diameter, miss distance, and relative velocity.
@@ -28,31 +57,4 @@ The model exhibited high performance, as evidenced by the evaluation metrics obt
 To further understand the factors influencing the model's predictions, we visualized the feature importance using a bar plot. This analysis revealed that the relative velocity of asteroids during close approach emerged as the most significant feature in determining their hazard level, followed by absolute magnitude and miss distance. This insight underscores the importance of velocity dynamics in assessing asteroid threat levels and aligns with established astronomical principles.
 
 In terms of validation, the results were benchmarked against standard performance metrics for classification tasks. The achieved accuracy, precision, and recall scores surpass typical thresholds for satisfactory model performance, indicating the robustness and reliability of the approach. Moreover, the feature importance plot provided additional validation by elucidating the key drivers behind the model's predictions, thereby enhancing the interpretability and trustworthiness of the findings.
-
-Model with all 5 attributes:
-• Accuracy: 0.93
-• Precision: 0.89
-• Recall: 1.0
-• F1 Score: 0.94
-• AUC-ROC: 0.99
-• AUC-PR: 0.99
-
-Model without miss distance:
-• Accuracy: 0.93
-• Precision: 0.91
-• Recall: 0.98
-• F1 Score: 0.94
-• AUC-ROC: 0.98
-• AUC-PR: 0.99
-
-Model without miss distance & relative velocity:
-Accuracy: 0.93
-Precision: 0.91
-Recall: 0.98
-F1 Score: 0.94
-AUC-ROC: 0.99
-AUC-PR: 0.99
-
-All three models had high accuracy, precision, recall, F1 score, and AUC-PR, indicating strong performance.
-Choice: If computational resources allow, I would choose the model with all 5 attributes because it ensures the highest level of safety by capturing all hazardous asteroids while maintaining strong performance across all metrics. However, if computational resources are limited or if minimizing false positives is a priority, the model without miss distance could be a suitable alternative, offering a good balance between precision and recall.
 

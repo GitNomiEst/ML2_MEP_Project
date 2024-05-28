@@ -9,7 +9,7 @@ def get_neo_data(api_key):
     base_url = "https://api.nasa.gov/neo/rest/v1/feed"
     next_url = base_url
     #print(next_url)
-    while x<=10:
+    while x<=40:
         x+=1
         print("entries loaded.. continues")
         response = requests.get(next_url, params={"api_key": api_key})
@@ -42,6 +42,6 @@ def save_to_mongodb(data):
 
 
 if __name__ == "__main__":
-    api_key = "PLEASE ENTER API KEY HERE" #To Do before run: enter API Key here
+    api_key = "YOUR-API-KEY" #To Do before run: enter API Key here
     neo_data = get_neo_data(api_key)
     save_to_mongodb(neo_data)
