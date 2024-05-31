@@ -32,7 +32,7 @@ def use_trained_model():
 
 def load_neo_data():
     # Connect to MongoDB
-    client = MongoClient(f"mongodb+srv://kaeseno1:eXuzhJ-ZV6KUH4t@cluster0.4pnoho7.mongodb.net/")
+    client = MongoClient(f"mongodb+srv://kaeseno1:<password>@cluster0.4pnoho7.mongodb.net/")
     db = client['nasa']
     collection = db['nasa']
 
