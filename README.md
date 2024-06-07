@@ -1,5 +1,8 @@
 # Machine Learning 2 - MEP Project
 
+## For student
+ATTENTION: There is another readme called 'READMEforSTUDENTS.md'. So for instructions on how to run the program etc. please read through the other README. Thanks!
+
 ## 1. What is the problem you are trying to solve? What is the motivation behind it? Why is your project relevant?
 The problem revolves around assessing the potential threat posed by asteroids to Earth. Specifically, the challenge entails accurately predicting whether a given asteroid possesses characteristics that classify it as "dangerous" or not, in terms of its potential impact on our planet. This prediction involves a multi-faceted analysis of various parameters associated with the asteroid's magnitude, diameter, miss distance, and relative velocity.
 
